@@ -1,0 +1,82 @@
+@startuml Library Management System
+
+class Library {
+  -String name
+  -String address
+  -String phone
+  -BookInventoryManager inventoryManager
+  -BookIssueManager issueManager
+  -PatronManager patronManager
+
+  +Library(String name, String address, String phone)
+  +Book addBookToInventory(int id, String title, String author, String isbn, int year)
+  +Patron enrollPatron(int id, String name, String phone, String email)
+  +boolean issueBookToPatron(Book book, Patron patron)
+  +boolean returnBook(Book book, Patron patron)
+}
+
+class Book {
+  -int id
+  -String title
+  -String author
+  -String isbn
+  -int publicationYear
+  -boolean isAvailable
+
+  +Book(int id, String title, String author, String isbn, int year)
+  +getters()
+  +setters()
+  +boolean isAvailable()
+  +void setAvailable(boolean status)
+}
+
+class Patron {
+  -int id
+  -String name
+  -String phone
+  -String email
+  -List<Book> borrowedBooks
+
+  +Patron(int id, String name, String phone, String email)
+  +getters()
+  +setters()
+  +void addBorrowedBook(Book book)
+  +void removeBorrowedBook(Book book)
+}
+
+class BookInventoryManager {
+  -List<Book> books
+
+  +void addBook(Book book)
+  +Book getBook(int id)
+  +List<Book> getAllBooks()
+  +boolean updateBookAvailability(Book book, boolean status)
+}
+
+class BookIssueManager {
+  -Map<Book, Patron> issuedBooks
+  -BookInventoryManager inventoryManager
+
+  +boolean issueBook(Book book, Patron patron)
+  +boolean returnBook(Book book, Patron patron)
+  +List<Book> getIssuedBooks(Patron patron)
+}
+
+class PatronManager {
+  -List<Patron> patrons
+
+  +void addPatron(Patron patron)
+  +Patron getPatron(int id)
+  +List<Patron> getAllPatrons()
+}
+
+Library "1" *-- "1" BookInventoryManager
+Library "1" *-- "1" BookIssueManager
+Library "1" *-- "1" PatronManager
+BookIssueManager "1" --> "1" BookInventoryManager
+BookInventoryManager "1" --> "*" Book
+PatronManager "1" --> "*" Patron
+BookIssueManager "1" --> "*" Book
+BookIssueManager "1" --> "*" Patron
+
+@enduml
